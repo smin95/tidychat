@@ -1,0 +1,34 @@
+id,abstract,draw_id,model_name,provider,prompt,params_hash,sample_size,effect_size,p_value,study_design,significance,population,heterogeneity_reported,notes,temperature,max_tokens
+1,"We randomized 120 participants (mean age 45.2, SD = 8.3) to either 
+     mindfulness-based stress reduction (n=60) or waitlist control (n=60). 
+     Primary outcome was anxiety (GAD-7). Results showed significant 
+     improvement (d = 0.72, p < .001, 95% CI [0.45, 0.99]).",1,llama3,ollama,Extract key study characteristics from this abstract for a systematic review.,f9adadf6,120,NA,NA,RCT,yes,adults,NA,NA,0,500
+2,"This meta-analysis included 28 studies (total N = 3,247 participants) 
+     examining the relationship between social media use and depression in 
+     adolescents. Overall effect was small but significant (r = 0.18, 
+     95% CI [0.12, 0.24], p < .001). Heterogeneity was moderate (I² = 45%).",1,llama3,ollama,Extract key study characteristics from this abstract for a systematic review.,f9adadf6,3247,NA,NA,meta-analysis,yes,adolescents,TRUE,28 studies included,0,500
+3,"A longitudinal study followed 89 mother-child dyads (children aged 3-5 years) 
+     for 2 years. No significant effects of authoritative parenting on emotion 
+     regulation were found (β = 0.08, p = .32).",1,llama3,ollama,Extract key study characteristics from this abstract for a systematic review.,f9adadf6,89,NA,NA,longitudinal,no,children,FALSE,,0,500
+1,"We randomized 120 participants (mean age 45.2, SD = 8.3) to either 
+     mindfulness-based stress reduction (n=60) or waitlist control (n=60). 
+     Primary outcome was anxiety (GAD-7). Results showed significant 
+     improvement (d = 0.72, p < .001, 95% CI [0.45, 0.99]).",2,llama3,ollama,Extract key study characteristics from this abstract for a systematic review.,f9adadf6,120,NA,NA,RCT,yes,adults,NA,NA,0,500
+2,"This meta-analysis included 28 studies (total N = 3,247 participants) 
+     examining the relationship between social media use and depression in 
+     adolescents. Overall effect was small but significant (r = 0.18, 
+     95% CI [0.12, 0.24], p < .001). Heterogeneity was moderate (I² = 45%).",2,llama3,ollama,Extract key study characteristics from this abstract for a systematic review.,f9adadf6,3247,NA,NA,meta-analysis,yes,adolescents,TRUE,28 studies included,0,500
+3,"A longitudinal study followed 89 mother-child dyads (children aged 3-5 years) 
+     for 2 years. No significant effects of authoritative parenting on emotion 
+     regulation were found (β = 0.08, p = .32).",2,llama3,ollama,Extract key study characteristics from this abstract for a systematic review.,f9adadf6,89,NA,NA,longitudinal,no,children,FALSE,,0,500
+1,"We randomized 120 participants (mean age 45.2, SD = 8.3) to either 
+     mindfulness-based stress reduction (n=60) or waitlist control (n=60). 
+     Primary outcome was anxiety (GAD-7). Results showed significant 
+     improvement (d = 0.72, p < .001, 95% CI [0.45, 0.99]).",3,llama3,ollama,Extract key study characteristics from this abstract for a systematic review.,f9adadf6,120,NA,NA,RCT,yes,adults,NA,NA,0,500
+2,"This meta-analysis included 28 studies (total N = 3,247 participants) 
+     examining the relationship between social media use and depression in 
+     adolescents. Overall effect was small but significant (r = 0.18, 
+     95% CI [0.12, 0.24], p < .001). Heterogeneity was moderate (I² = 45%).",3,llama3,ollama,Extract key study characteristics from this abstract for a systematic review.,f9adadf6,3247,NA,NA,meta-analysis,yes,adolescents,TRUE,28 studies included,0,500
+3,"A longitudinal study followed 89 mother-child dyads (children aged 3-5 years) 
+     for 2 years. No significant effects of authoritative parenting on emotion 
+     regulation were found (β = 0.08, p = .32).",3,llama3,ollama,Extract key study characteristics from this abstract for a systematic review.,f9adadf6,89,NA,NA,longitudinal,no,children,FALSE,,0,500

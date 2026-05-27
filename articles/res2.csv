@@ -1,0 +1,52 @@
+abstract_text,id,draw_id,model_name,provider,prompt,params_hash,sample_size,study_design,effect_size,significant,population,temperature,max_tokens,seed
+"We recruited 120 undergraduate students (M_age = 19.4, 65% female) 
+     to test mindfulness training on anxiety. Participants were randomized 
+     to 8-week MBSR or waitlist control. Results showed significant 
+     reduction in anxiety (d = 0.72, p < .001).",1,1,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,120,RCT,0.72,yes,student,0.3,500,123
+"In a sample of 45 adults with GAD (ages 22-65), we compared CBT to 
+     supportive therapy. No significant between-group differences were 
+     found (d = 0.12, p = .45).",2,1,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,45,RCT,0.12,no,older adult,0.3,500,123
+"This meta-analysis synthesized 28 studies (N = 3,247 participants) 
+     examining social media use and depression in adolescents. Overall 
+     effect was small but significant (r = 0.18, 95% CI [0.12, 0.24]).",3,1,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,3247,meta-analysis,0.18,yes,older adult,0.3,500,123
+"We conducted a longitudinal study with 89 mother-child dyads (children 
+     aged 3-5) to examine parenting styles and emotional development. 
+     No significant effects were found (β = 0.08, p = .32).",4,1,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,89,longitudinal,NA,no,child/adolescent,0.3,500,123
+"We recruited 120 undergraduate students (M_age = 19.4, 65% female) 
+     to test mindfulness training on anxiety. Participants were randomized 
+     to 8-week MBSR or waitlist control. Results showed significant 
+     reduction in anxiety (d = 0.72, p < .001).",1,2,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,120,RCT,0.72,yes,student,0.3,500,123
+"In a sample of 45 adults with GAD (ages 22-65), we compared CBT to 
+     supportive therapy. No significant between-group differences were 
+     found (d = 0.12, p = .45).",2,2,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,45,RCT,0.12,no,older adult,0.3,500,123
+"This meta-analysis synthesized 28 studies (N = 3,247 participants) 
+     examining social media use and depression in adolescents. Overall 
+     effect was small but significant (r = 0.18, 95% CI [0.12, 0.24]).",3,2,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,3247,meta-analysis,0.18,yes,older adult,0.3,500,123
+"We conducted a longitudinal study with 89 mother-child dyads (children 
+     aged 3-5) to examine parenting styles and emotional development. 
+     No significant effects were found (β = 0.08, p = .32).",4,2,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,89,longitudinal,NA,no,child/adolescent,0.3,500,123
+"We recruited 120 undergraduate students (M_age = 19.4, 65% female) 
+     to test mindfulness training on anxiety. Participants were randomized 
+     to 8-week MBSR or waitlist control. Results showed significant 
+     reduction in anxiety (d = 0.72, p < .001).",1,3,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,120,RCT,0.72,yes,student,0.3,500,123
+"In a sample of 45 adults with GAD (ages 22-65), we compared CBT to 
+     supportive therapy. No significant between-group differences were 
+     found (d = 0.12, p = .45).",2,3,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,45,RCT,0.12,no,older adult,0.3,500,123
+"This meta-analysis synthesized 28 studies (N = 3,247 participants) 
+     examining social media use and depression in adolescents. Overall 
+     effect was small but significant (r = 0.18, 95% CI [0.12, 0.24]).",3,3,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,3247,meta-analysis,0.18,yes,older adult,0.3,500,123
+"We conducted a longitudinal study with 89 mother-child dyads (children 
+     aged 3-5) to examine parenting styles and emotional development. 
+     No significant effects were found (β = 0.08, p = .32).",4,3,llama3,ollama,"Extract key study characteristics from this abstract 
+                    for a systematic review.",0128e27a,89,longitudinal,NA,no,child/adolescent,0.3,500,123

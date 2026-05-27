@@ -1,0 +1,124 @@
+---
+title: "1. Annotating texts with LLM"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This section demonstrates the core functionality of `tidychat`: annotating text with multiple draws and quantifying uncertainty. We'll analyze therapy session notes and identify which cases need human review.
+
+## Setup
+
+First, load the package and create a chat constructor. We'll use Ollama with a small free model:
+
+```{r, warning = F, message = F}
+library(tidychat)
+library(tidyverse)
+
+# Initialize Ollama (make sure Ollama is running locally)
+# Run: ollama pull llama3.2:3b
+chat <- choose_ollama(model = "llama3", temperature = 0.3, seed = 123)
+```
+
+## Prepare Data
+
+We have five therapy session notes to analyze:
+
+```{r, warning = F, message = F}
+therapy_notes <- data.frame(
+  client_id = 1:5,
+  session_note = c(
+    "Client reported significant progress this week. Has been using coping 
+     strategies consistently and feeling more in control of anxiety symptoms.",
+    
+    "Client expressed frustration with lack of progress. Feels stuck and 
+     unmotivated despite practicing techniques.",
+    
+    "Mixed session. Some good moments discussing family dynamics, but client 
+     seemed distracted and fatigued throughout.",
+    
+    "Breakthrough session! Client connected childhood experiences to current 
+     relationship patterns for the first time. Emotional but hopeful.",
+    
+    "Routine check-in. Client is stable but notes feeling 'blah' about everything. 
+     No significant changes positive or negative."
+  ),
+  stringsAsFactors = FALSE
+)
+```
+
+## Annotate with Multiple Draws
+
+We'll classify each note as positive, negative, or neutral, taking 5 independent draws per client. Multiple draws allow us to measure how confident the LLM is in each classification.
+
+The key arguments to `llm_annotate()` are:
+
+- **`col`**: The name of the new column that will contain the annotations (`sentiment` in this example)
+- **`input`**: The column containing the text to be analyzed (`session_note`)
+- **`id`**: An optional unique identifier column; if not provided, a `.id` column is automatically created
+- **`prompt_task`**: The instruction given to the LLM describing what to extract
+- **`extract_type`**: The type of output expected – here "category" tells the LLM to choose from predefined options
+- **`categories`**: The allowed values for categorical extraction, which the LLM is constrained to return
+- **`chat`**: The chat constructor function that defines which model and parameters to use
+- **`n_draws`**: The number of independent draws (repeated judgments) per item – the core feature for uncertainty quantification
+
+```{r, eval = F}
+results <- therapy_notes %>%
+  llm_annotate(
+    col = sentiment,
+    input = session_note,
+    id = client_id,
+    prompt_task = "Classify the sentiment of this therapy note as positive, 
+                    negative, or neutral. Return only one word.",
+    extract_type = "category",
+    categories = c("positive", "negative", "neutral"),
+    chat = chat,
+    n_draws = 5,
+    show_progress = TRUE
+  )
+
+head(results)
+```
+
+```{r, echo = F, warning = F, message = F}
+results <- read_csv('res1.csv')
+head(results)
+```
+
+The output of `llm_annotate()` is a tidy data frame where each row represents a single draw from the LLM. The key columns include: `item_id` (the original identifier), `draw_id` (the draw number, from 1 to `.n_draws`), the annotation column (named after `col`, in this case `sentiment`), plus metadata columns `model_name`, `provider`, `prompt`, `params_hash`, and individual parameter columns (`temperature`, `max_tokens`, `seed`). This long-format structure is designed to work with `dplyr` functions such as `group_by()` and others. 
+
+## Quantify Uncertainty (or Agreement)
+
+We can then use `summarise_draws()` to quantify uncertainty across the 5 draws. By specifying `sentiment` as the column to summarize, the function collapses the multiple draws per item into a single row of summary statistics, grouped by the identifiers we provided (`id` and `session_note`).
+
+```{r}
+uncertainty <- results %>%
+  group_by(id, session_note) %>%
+  summarise_draws(sentiment)
+
+print(uncertainty)
+```
+
+The output of `summarise_draws()` is a tidy summary table where each row corresponds to one original item (identified by the `id` and `session_note` columns), collapsing the 5 draws per item into summary statistics. The majority column shows the most frequent `sentiment` across draws (all 5 draws agreed in this case), `agreement` reports the proportion of draws matching that majority (1.0 = perfect agreement), `entropy` quantifies uncertainty (0 = no uncertainty), and `distribution` shows the complete frequency distribution across all draws (e.g., "positive (5)" indicates all 5 draws were positive).
+
+## Flag Cases for Human Review
+
+Here, we establish so that cases with agreement below 70% (the default threshold) should be reviewed by a human.
+
+```{r}
+needs_review <- uncertainty %>%
+  filter(uncertain == TRUE) %>%
+  select(id, majority, agreement, entropy, distribution)
+
+print(needs_review)
+```
+
+As expected, it is empty because all LLM responses have agreement of 1. 
+
+## Summary
+
+`tidychat`'s multi-draw approach provides a principled way to quantify LLM uncertainty. By taking multiple independent judgments and measuring agreement, users can make informed decisions about which automated annotations to trust.

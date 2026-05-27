@@ -1,0 +1,19 @@
+id,note,draw_id,model_name,provider,prompt,params_hash,session_quality,anxiety_score,depression_score,homework_completed,breakthrough,key_themes,temperature,max_tokens
+1,"Client reported significant reduction in anxiety symptoms after 8 weeks of CBT. 
+     Reported using coping strategies daily. GAD-7 score dropped from 14 to 6.",1,llama3,ollama,Extract key clinical information from this therapy session note.,f9adadf6,positive,8,0,1,TRUE,anxiety,0,500
+2,"Client struggled with homework compliance this week. Only completed 2 of 5 
+     assigned exercises. Reported feeling overwhelmed by work demands.",1,llama3,ollama,Extract key clinical information from this therapy session note.,f9adadf6,positive,0,NA,2,FALSE,overwhelmed,0,500
+3,"Breakthrough session! Client identified core belief about worthlessness. 
+     Emotional but productive. Completed all homework. PHQ-9 improved from 18 to 12.",1,llama3,ollama,Extract key clinical information from this therapy session note.,f9adadf6,positive,NA,12,1,TRUE,worthlessness,0,500
+1,"Client reported significant reduction in anxiety symptoms after 8 weeks of CBT. 
+     Reported using coping strategies daily. GAD-7 score dropped from 14 to 6.",2,llama3,ollama,Extract key clinical information from this therapy session note.,f9adadf6,positive,8,0,1,TRUE,anxiety,0,500
+2,"Client struggled with homework compliance this week. Only completed 2 of 5 
+     assigned exercises. Reported feeling overwhelmed by work demands.",2,llama3,ollama,Extract key clinical information from this therapy session note.,f9adadf6,positive,0,NA,2,FALSE,overwhelmed,0,500
+3,"Breakthrough session! Client identified core belief about worthlessness. 
+     Emotional but productive. Completed all homework. PHQ-9 improved from 18 to 12.",2,llama3,ollama,Extract key clinical information from this therapy session note.,f9adadf6,positive,NA,12,1,TRUE,worthlessness,0,500
+1,"Client reported significant reduction in anxiety symptoms after 8 weeks of CBT. 
+     Reported using coping strategies daily. GAD-7 score dropped from 14 to 6.",3,llama3,ollama,Extract key clinical information from this therapy session note.,f9adadf6,positive,8,0,1,TRUE,anxiety,0,500
+2,"Client struggled with homework compliance this week. Only completed 2 of 5 
+     assigned exercises. Reported feeling overwhelmed by work demands.",3,llama3,ollama,Extract key clinical information from this therapy session note.,f9adadf6,positive,0,NA,2,FALSE,overwhelmed,0,500
+3,"Breakthrough session! Client identified core belief about worthlessness. 
+     Emotional but productive. Completed all homework. PHQ-9 improved from 18 to 12.",3,llama3,ollama,Extract key clinical information from this therapy session note.,f9adadf6,positive,NA,12,1,TRUE,worthlessness,0,500

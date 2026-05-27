@@ -1,0 +1,47 @@
+url: 'https://smin95.github.io/tidychat'
+
+authors:
+  Seung Hyun Min:
+    href: "https://www.smin95.com"
+
+template:
+  bootstrap: 5
+  bootswatch: simplex
+
+articles:
+  - title: "Guides"
+    navbar: ~
+    contents:
+       - annotate
+       - extract
+       - models
+       - fields
+
+reference:
+  - title: "Core LLM Functions"
+    desc: "Main functions for interacting with LLM providers"
+    contents:
+      - llm_annotate
+      - llm_extract
+      - summarise_draws
+
+  - title: "Provider Selection"
+    desc: "Choose which LLM provider to use"
+    contents:
+      - choose_ollama
+      - choose_gemini
+      - choose_openai
+      - choose_anthropic
+      - choose_groq
+      - choose_deepseek
+      - choose_azure_openai
+
+  - title: "Field Validators"
+    desc: "Functions for defining structured data fields"
+    contents:
+      - field_category
+      - field_integer
+      - field_number
+      - field_text
+      - field_boolean
+      - field_array

@@ -1,0 +1,152 @@
+---
+title: "2. Extracting information with LLM into multiple columns"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This section shows how to extract structured data from research abstracts using `llm_extract()`. This is particularly useful for systematic reviews and meta-analyses where researchers need to quickly code hundreds of abstracts.
+
+## Setup
+
+First, load the package and create a chat constructor. We'll use Ollama with a small free model:
+
+```{r, warning = F, message = F}
+library(tidychat)
+library(tidyverse)
+
+# Initialize Ollama (make sure Ollama is running locally)
+# Run: ollama pull llama3.2:3b
+chat <- choose_ollama(model = "llama3", temperature = 0.3, seed = 123)
+```
+
+## Define Extraction Schema
+
+We'll extract key study characteristics from psychology abstracts. Each field is typed to ensure consistent output.
+
+```{r, warning = F, message = F}
+extraction_fields <- list(
+  sample_size = field_number(
+    description = "Total number of participants in the study"
+  ),
+  
+  study_design = field_category(
+    description = "Study design type",
+    categories = c("RCT", "quasi-experimental", "correlational", 
+                   "longitudinal", "meta-analysis", "qualitative")
+  ),
+  
+  effect_size = field_number(
+    description = "Reported effect size (Cohen's d, Hedges' g, or r). 
+                   Extract NA if not reported.",
+    required = FALSE
+  ),
+  
+  significant = field_category(
+    description = "Were the main findings statistically significant?",
+    categories = c("yes", "no", "mixed", "not reported")
+  ),
+  
+  population = field_category(
+    description = "Population studied",
+    categories = c("clinical", "community", "student", "older adult", 
+                   "child/adolescent", "mixed")
+  )
+)
+```
+
+## Prepare Abstracts
+
+We have four sample abstracts from psychology research.
+
+```{r}
+abstracts <- data.frame(
+  abstract_text = c(
+    "We recruited 120 undergraduate students (M_age = 19.4, 65% female) 
+     to test mindfulness training on anxiety. Participants were randomized 
+     to 8-week MBSR or waitlist control. Results showed significant 
+     reduction in anxiety (d = 0.72, p < .001).",
+    
+    "In a sample of 45 adults with GAD (ages 22-65), we compared CBT to 
+     supportive therapy. No significant between-group differences were 
+     found (d = 0.12, p = .45).",
+    
+    "This meta-analysis synthesized 28 studies (N = 3,247 participants) 
+     examining social media use and depression in adolescents. Overall 
+     effect was small but significant (r = 0.18, 95% CI [0.12, 0.24]).",
+    
+    "We conducted a longitudinal study with 89 mother-child dyads (children 
+     aged 3-5) to examine parenting styles and emotional development. 
+     No significant effects were found (β = 0.08, p = .32)."
+  ),
+  stringsAsFactors = FALSE
+)
+```
+
+## Extract Structured Data
+
+We use `llm_extract()` to extract all fields in a single API call per abstract.
+
+```{r, eval = F}
+results <- abstracts %>%
+  llm_extract(
+    fields = extraction_fields,
+    input = abstract_text,
+    prompt_task = "Extract key study characteristics from this abstract 
+                    for a systematic review.",
+    chat = chat,
+    n_draws = 3,  # 3 draws for reliability check
+    show_progress = TRUE
+  )
+
+head(results)
+```
+
+```{r, echo = F, warning = F, message = F}
+results <- read_csv('res2.csv')
+head(results)
+```
+
+The output of `llm_extract()` is a tidy data frame where each row represents a single draw from the LLM, with structured fields extracted as separate columns. The key columns include: `id` (the original identifier), `draw_id` (the draw number, from 1 to `n_draws`), each extracted field named after the corresponding element in `fields` (here `sample_size`, `study_design`, `effect_size`, `significant`, `population`), plus metadata columns `model_name`, `provider`, `prompt`, `params_hash`, and individual parameter columns (`temperature`, `max_tokens`, `seed`). This long-format structure allows researchers to examine variability across draws for each extracted field using standard `dplyr` verbs like `group_by()` and `summarise_draws()`.
+
+## Assess Extraction Reliability
+
+We can use `summarise_draws()` to evaluate how consistently the LLM extracted each field across the 3 draws. By grouping by `id` and passing multiple field names (`sample_size`, `study_design`, `significant`, `population`), the function calculates reliability metrics for each field separately.
+
+```{r}
+reliability <- results %>%
+  group_by(id) %>%
+  summarise_draws(sample_size, study_design, significant, population)
+
+print(reliability)
+```
+
+The output shows that all fields achieved perfect reliability for every abstract (agreement = 1, entropy = 0). For `sample_size`, all 3 draws produced identical numbers (e.g., 120 for study 1, 45 for study 2). For categorical fields like `study_design` and `significant`, the `distribution` column confirms complete consistency across draws (e.g., "`RCT (3)`" indicates all 3 draws classified the design as RCT). This high agreement indicates that for these clear-cut abstracts, the LLM's extractions are trustworthy without manual verification. However, note the `effect_size` field was omitted because it had missing values (`NA`) for some studies.
+
+## View Extracted Data
+
+Once we've confirmed high reliability across draws, we can collapse the multiple draws into a single row per study for further analysis. Using `group_by(id)` followed by `summarise()` with `first()`, we take the first (or any) draw's values since all draws agreed perfectly.
+
+```{r}
+extracted_data <- results %>%
+  group_by(id) %>%
+  summarise(
+    design = first(study_design),
+    n = as.numeric(first(sample_size)),
+    population = first(population),
+    significant = first(significant),
+    .groups = "drop"
+  )
+
+print(extracted_data)
+```
+
+This produces a clean, one-row-per-study data frame ready for meta-analysis or research synthesis. Notice how `dplyr` verbs work seamlessly with `llm_extract()` output: `group_by(id)` groups the 3 draws for each study, `summarise()` collapses them into single values using `first()` (since agreement is perfect), and `as.numeric()` converts the extracted character values to numbers for quantitative analysis. The result is a standard tidy data frame that can be exported to CSV, merged with other datasets, or used directly in statistical models—no reshaping or manual data entry required.
+
+## Summary
+
+This section demonstrated how `llm_extract()` can automate structured data extraction from research abstracts, pulling key study characteristics like sample size, design, and significance with perfect reliability across multiple draws. The extracted data integrates seamlessly with tidyverse workflows, allowing researchers to collapse draws into a clean dataset ready for meta-analysis or systematic review using standard `dplyr` verbs.

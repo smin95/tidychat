@@ -1,0 +1,39 @@
+Package: tidychat
+Title: Tidy Tools for Batch LLM Annotation and Extraction
+Version: 0.1.0
+Authors@R: person(
+      given = "Seung Hyun",
+      family = "Min",
+      role = c("aut", "cre"),
+      email = "seung.min@mail.mcgill.ca"
+    )
+Description: Provides tidy tools for batch annotation and structured extraction 
+  using Large Language Models (LLMs). Supports multiple independent draws per 
+  item with built-in uncertainty quantification, making it ideal for systematic 
+  text analysis, literature reviews, and reproducible research workflows. 
+  Compatible with Ollama, Gemini, OpenAI, Anthropic, Groq, and DeepSeek APIs.
+License: MIT + file LICENSE
+URL: https://smin95.github.io/tidychat/
+BugReports: https://github.com/smin95/tidychat/issues/
+Depends: 
+    R (>= 4.1.0)
+Imports:
+    dplyr,
+    tidyr,
+    purrr,
+    rlang,
+    stringr,
+    cli,
+    jsonlite,
+    ellmer,
+    pdftools,
+    tibble
+Suggests:
+    digest,
+    testthat (>= 3.0.0),
+    rmarkdown,
+    ggplot2
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
