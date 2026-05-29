@@ -1,7 +1,7 @@
 <div style="margin-top: 60px;"></div>
 
 <p align="center">
-  <img src="man/figures/hex_sticker.png" alt="tidychat hex sticker" height="170px" width="153px" style="float: right; margin-top: 27px;" align="right">
+  <img src="man/figures/hex_sticker.png" alt="tidychat hex sticker" height="170px" width="153px" style="float: right" align="right">
   <h1 align="left" style="font-size: 1.9em;"><strong>tidychat</strong>: Tidy LLM Workflows for Text Annotation and Structured Extraction</h1>
 </p>
 
