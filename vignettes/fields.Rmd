@@ -41,7 +41,9 @@ First, create a chat constructor using Ollama (free, runs locally):
 
 ```{r, message =  F, warning = F}
 library(tidychat)
-library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
 
 # Make sure Ollama is running locally
 # Run: ollama pull llama3.2:3b
