@@ -17,7 +17,8 @@ First, load the package and create a chat constructor. We'll use Ollama with a s
 
 ```{r, warning = F, message = F}
 library(tidychat)
-library(tidyverse)
+library(tidyr)
+library(dplyr)
 
 # Initialize Ollama (make sure Ollama is running locally)
 chat <- choose_ollama(model = "llama3", temperature = 0.3, seed = 123)
