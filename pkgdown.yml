@@ -1,0 +1,13 @@
+pandoc: 3.8.3
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  annotate: annotate.html
+  extract: extract.html
+  fields: fields.html
+  generate: generate.html
+  models: models.html
+last_built: 2026-05-29T11:59Z
+urls:
+  reference: https://smin95.github.io/tidychat/reference
+  article: https://smin95.github.io/tidychat/articles

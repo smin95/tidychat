@@ -1,0 +1,122 @@
+# **tidychat**: Tidy LLM Workflows for Text Annotation and Structured Extraction
+
+![tidychat hex sticker](reference/figures/hex_sticker.png)
+
+[![devel version
+badge](https://img.shields.io/badge/devel%20version-0.1.0-black.svg)](https://github.com/smin95/tidychat)
+
+**tidychat** is an R package designed for **interactive LLM-powered
+annotation and structured data extraction**. It provides a unified
+interface for working with multiple LLM providers including Ollama,
+Gemini, OpenAI, Anthropic, Groq, DeepSeek, and Azure OpenAI.
+
+### Why use tidychat for LLM Workflows?
+
+- **Structured Data Extraction**: Extract categorized, numeric, or
+  text-based fields from unstructured text, PDFs, images or others into
+  a tidy data frame output.
+- **Batch Annotation**: Annotate large text collections with flexible
+  field definitions and progress tracking.
+- **Automatic Metadata Tracking**: Every response automatically includes
+  query timestamp, model name, provider, temperature, max_tokens, and
+  exact prompt text in a tidy data frame output.
+- **Multiple Draws & Uncertainty Quantification**: Take multiple
+  independent responses per item and quantify agreement, entropy, and
+  uncertainty with
+  [`summarise_draws()`](https://smin95.github.io/tidychat/reference/summarise_draws.md).
+- **Reproducible Workflows**: Define extraction schemas once and apply
+  them consistently across datasets.
+
+------------------------------------------------------------------------
+
+### Documentation & Examples
+
+For detailed guides on annotation workflows and provider configuration,
+visit the official documentation: 👉 **[tidychat Documentation
+Website](https://smin95.github.io/tidychat/)**
+
+------------------------------------------------------------------------
+
+### Installation using RStudio
+
+Install the development version of **tidychat** from GitHub:
+
+``` r
+
+# Install remotes if not already installed
+# install.packages("remotes")
+
+remotes::install_github("smin95/tidychat")
+```
+
+# Package index
+
+## Core LLM Functions
+
+Main functions for interacting with LLM providers
+
+- [`llm_annotate()`](https://smin95.github.io/tidychat/reference/llm_annotate.md)
+  : Annotate text or images using LLMs with multiple draws
+- [`llm_extract()`](https://smin95.github.io/tidychat/reference/llm_extract.md)
+  : Extract multiple structured fields from text, images, PDFs, or audio
+- [`llm_generate()`](https://smin95.github.io/tidychat/reference/llm_generate.md)
+  : Generate structured synthetic data
+- [`summarise_draws()`](https://smin95.github.io/tidychat/reference/summarise_draws.md)
+  [`summarize_draws()`](https://smin95.github.io/tidychat/reference/summarise_draws.md)
+  : Summarise multiple draws from LLM annotations
+
+## Provider Selection
+
+Choose which LLM provider to use
+
+- [`choose_ollama()`](https://smin95.github.io/tidychat/reference/choose_ollama.md)
+  : Create an Ollama chat constructor with parameter tracking
+- [`choose_gemini()`](https://smin95.github.io/tidychat/reference/choose_gemini.md)
+  : Create a Google Gemini chat constructor with parameter tracking
+- [`choose_openai()`](https://smin95.github.io/tidychat/reference/choose_openai.md)
+  : Create an OpenAI chat constructor with parameter tracking
+- [`choose_anthropic()`](https://smin95.github.io/tidychat/reference/choose_anthropic.md)
+  : Create an Anthropic Claude chat constructor with parameter tracking
+- [`choose_groq()`](https://smin95.github.io/tidychat/reference/choose_groq.md)
+  : Create a Groq chat constructor with parameter tracking
+- [`choose_deepseek()`](https://smin95.github.io/tidychat/reference/choose_deepseek.md)
+  : Create a DeepSeek chat constructor with parameter tracking
+- [`choose_azure_openai()`](https://smin95.github.io/tidychat/reference/choose_azure_openai.md)
+  : Create an Azure OpenAI chat constructor with parameter tracking
+- [`choose_huggingface()`](https://smin95.github.io/tidychat/reference/choose_huggingface.md)
+  : Create a Hugging Face chat constructor with parameter tracking
+- [`choose_openrouter()`](https://smin95.github.io/tidychat/reference/choose_openrouter.md)
+  : Create an OpenRouter chat constructor with parameter tracking
+
+## Field Validators
+
+Functions for defining structured data fields
+
+- [`field_category()`](https://smin95.github.io/tidychat/reference/field_category.md)
+  : Create a category field specification
+- [`field_integer()`](https://smin95.github.io/tidychat/reference/field_integer.md)
+  : Create an integer field specification
+- [`field_number()`](https://smin95.github.io/tidychat/reference/field_number.md)
+  : Create a number field specification
+- [`field_text()`](https://smin95.github.io/tidychat/reference/field_text.md)
+  : Create a text field specification
+- [`field_boolean()`](https://smin95.github.io/tidychat/reference/field_boolean.md)
+  : Create a boolean field specification
+- [`field_array()`](https://smin95.github.io/tidychat/reference/field_array.md)
+  : Create an array field specification
+
+# Articles
+
+### Guides
+
+- [1. Annotating Texts with
+  LLM](https://smin95.github.io/tidychat/articles/annotate.md):
+- [2. Extracting Information from Texts/PDFs/Images with LLM into
+  Multiple
+  Columns](https://smin95.github.io/tidychat/articles/extract.md):
+- [3. Generating Texts with
+  LLM](https://smin95.github.io/tidychat/articles/generate.md):
+- [4. Choosing LLM Providers and Configuring
+  Models](https://smin95.github.io/tidychat/articles/models.md):
+- [5. Field Specifications for Structured
+  Extraction](https://smin95.github.io/tidychat/articles/fields.md):
