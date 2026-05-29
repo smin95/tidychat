@@ -6,10 +6,10 @@
 \usage{
 choose_deepseek(
   model = "deepseek-chat",
-  api_key = NULL,
   base_url = NULL,
   temperature = 0.3,
   max_tokens = 2048,
+  seed = NULL,
   ...
 )
 }
@@ -24,9 +24,6 @@ choose_deepseek(
 \item "deepseek/deepseek-r1" (DeepSeek-R1)
 }}
 
-\item{api_key}{API key for DeepSeek or OpenRouter. If NULL, reads from
-DEEPSEEK_API_KEY or OPENROUTER_API_KEY env var.}
-
 \item{base_url}{Base URL for the API. Defaults to:
 \itemize{
 \item "https://api.deepseek.com/v1" for official API
@@ -37,6 +34,8 @@ DEEPSEEK_API_KEY or OPENROUTER_API_KEY env var.}
 
 \item{max_tokens}{Maximum tokens to generate (default: 2048)}
 
+\item{seed}{Optional random seed for reproducible outputs (if supported by provider)}
+
 \item{...}{Additional parameters passed to ellmer}
 }
 \value{
@@ -44,32 +43,17 @@ A chat constructor function that returns a list with chat methods
 }
 \description{
 Creates a chat constructor function for DeepSeek models via official API
-or OpenRouter. DeepSeek offers competitive pricing with strong performance.
+or OpenRouter. Requires DEEPSEEK_API_KEY or OPENROUTER_API_KEY environment variable.
 }
 \examples{
 \dontrun{
-# Using official DeepSeek API (has free credits)
+# Using official DeepSeek API
 Sys.setenv(DEEPSEEK_API_KEY = "your-deepseek-api-key")
 chat <- choose_deepseek(model = "deepseek-chat")
 
-# Using OpenRouter (alternative access)
+# Using OpenRouter
 Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-key")
-chat <- choose_deepseek(
-  model = "deepseek/deepseek-chat",
-  base_url = "https://openrouter.ai/api/v1"
-)
-
-# Use reasoning model for complex tasks
-chat <- choose_deepseek(model = "deepseek-reasoner", temperature = 0.1)
-
-# Extract with DeepSeek
-results <- data \%>\%
-  llm_extract(
-    .fields = extraction_fields,
-    .input = text,
-    .chat = chat,
-    .n_draws = 3
-  )
+chat <- choose_deepseek(model = "deepseek/deepseek-chat")
 }
 
 }

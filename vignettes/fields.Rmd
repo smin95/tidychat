@@ -1,5 +1,5 @@
 ---
-title: "4. Field Specifications for Structured Extraction"
+title: "5. Field Specifications for Structured Extraction"
 ---
 
 ```{r, include = FALSE}
@@ -124,7 +124,7 @@ head(results)
 ```
 
 ```{r, echo = F}
-results <- read_csv('fields1.csv')
+results <- readRDS('fields1.RDS')
 head(results)
 ```
 
@@ -152,7 +152,11 @@ abstracts <- data.frame(
   ),
   stringsAsFactors = FALSE
 )
+```
 
+First, define what information you need to extract from each abstract. The `field_*()` functions ensure consistent, typed output:
+
+```{r}
 # Define fields for systematic review
 review_fields <- list(
   # Numeric fields
@@ -200,6 +204,8 @@ review_fields <- list(
 )
 ```
 
+Process the abstracts with `n_draws = 3` to measure extraction reliability:
+
 ```{r, eval = F}
 # Extract data
 review_results <- abstracts %>%
@@ -217,8 +223,10 @@ head(review_results)
 ```
 
 ```{r, echo = F, message = F, warning = F}
-review_results <- read_csv('fields2.csv')
+review_results <- readRDS('fields2.RDS')
 ```
+
+Use`summarise_draws()` to check how consistently the LLM extracted each field across the 3 draws:
 
 ```{r}
 # Assess extraction reliability
@@ -228,6 +236,8 @@ reliability <- review_results %>%
 
 print(reliability)
 ```
+
+The output shows perfect reliability across all fields (agreement = 1, entropy = 0). For `sample_size`, all 3 draws produced identical numbers (120, 3247, and 89 respectively). For categorical fields like `study_design` and `significance`, the distribution column confirms complete consistency (e.g., "`RCT (3)`" indicates all 3 draws classified the design as RCT). This high agreement indicates that for these clearly written abstracts, the LLM's extractions are trustworthy without manual verification.
 
 ## Example 3: Qualitative Theme Extraction with Arrays
 
@@ -479,7 +489,7 @@ The agreement of `sentiment` response across draws is 100%.
 
 The extracted numeric ratings allow us to create informative visualizations. Again, we aggregate across draws first:
 
-```{r, fig.height=4.2, fig.width=5.5}
+```{r, fig.height=4.2, fig.width=5.5, fig.alt = "Fig1"}
 # Prepare data for plotting (one row per response)
 plot_data <- response_results %>%
   group_by(id) %>%

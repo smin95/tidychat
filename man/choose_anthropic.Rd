@@ -6,10 +6,10 @@
 \usage{
 choose_anthropic(
   model = "claude-sonnet-4-20250514",
-  api_key = NULL,
   base_url = NULL,
   temperature = 0.3,
   max_tokens = 2048,
+  seed = NULL,
   ...
 )
 }
@@ -22,13 +22,13 @@ choose_anthropic(
 \item "claude-sonnet-4-20250514" (newest)
 }}
 
-\item{api_key}{Anthropic API key. If NULL, reads from ANTHROPIC_API_KEY env var.}
-
 \item{base_url}{Optional custom base URL}
 
 \item{temperature}{Sampling temperature (0-1, higher = more random, default: 0.3)}
 
 \item{max_tokens}{Maximum tokens to generate (default: 2048)}
+
+\item{seed}{Optional random seed for reproducible outputs (if supported by provider)}
 
 \item{...}{Additional parameters passed to ellmer}
 }
@@ -37,27 +37,15 @@ A chat constructor function that returns a list with chat methods
 }
 \description{
 Creates a chat constructor function for Anthropic's Claude models.
-Requires an Anthropic API key.
+Requires ANTHROPIC_API_KEY environment variable to be set.
 }
 \examples{
 \dontrun{
-# Set API key
+# Set API key in environment
 Sys.setenv(ANTHROPIC_API_KEY = "your-api-key")
 
 # Use Claude Haiku for fast, cheap annotation
 chat <- choose_anthropic(model = "claude-3-haiku-20240307")
-
-# Use Claude Sonnet for balanced performance
-chat <- choose_anthropic(model = "claude-3-5-sonnet-20241022")
-
-# Extract structured data with Claude
-results <- data \%>\%
-  llm_extract(
-    .fields = fields,
-    .input = text,
-    .chat = chat,
-    .n_draws = 3
-  )
 }
 
 }

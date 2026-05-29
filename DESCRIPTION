@@ -1,5 +1,5 @@
 Package: tidychat
-Title: Tidy Tools for Batch LLM Annotation and Extraction
+Title: Tidy Tool for Batch LLM Annotation and Extraction
 Version: 0.1.0
 Authors@R: person(
       given = "Seung Hyun",

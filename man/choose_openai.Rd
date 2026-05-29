@@ -6,10 +6,10 @@
 \usage{
 choose_openai(
   model = "gpt-4o-mini",
-  api_key = NULL,
   base_url = NULL,
   temperature = 0.3,
   max_tokens = 2048,
+  seed = NULL,
   ...
 )
 }
@@ -22,13 +22,13 @@ choose_openai(
 \item "gpt-3.5-turbo" (legacy, cheapest)
 }}
 
-\item{api_key}{OpenAI API key. If NULL, reads from OPENAI_API_KEY env var.}
-
 \item{base_url}{Optional custom base URL (e.g., for Azure OpenAI)}
 
 \item{temperature}{Sampling temperature (0-1, higher = more random, default: 0.3)}
 
 \item{max_tokens}{Maximum tokens to generate (default: 2048)}
+
+\item{seed}{Optional random seed for reproducible outputs (if supported by provider)}
 
 \item{...}{Additional parameters passed to ellmer}
 }
@@ -37,27 +37,15 @@ A chat constructor function that returns a list with chat methods
 }
 \description{
 Creates a chat constructor function for OpenAI models (GPT-4, GPT-3.5, etc.).
-Requires an OpenAI API key.
+Requires OPENAI_API_KEY environment variable to be set.
 }
 \examples{
 \dontrun{
-# Set API key
+# Set API key in environment
 Sys.setenv(OPENAI_API_KEY = "your-api-key")
 
 # Use GPT-4o Mini for cost-effective annotation
 chat <- choose_openai(model = "gpt-4o-mini", temperature = 0.2)
-
-# Use GPT-4o for complex extraction
-chat <- choose_openai(model = "gpt-4o", max_tokens = 4096)
-
-# Annotate with OpenAI
-results <- data \%>\%
-  llm_annotate(
-    .col = sentiment,
-    .input = text,
-    .chat = chat,
-    .n_draws = 5
-  )
 }
 
 }

@@ -1,0 +1,149 @@
+---
+title: "3. Generating Texts with LLM"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This section demonstrates how to generate structured synthetic data using `llm_generate()`. This is particularly useful for creating vignettes for scale development, simulating patient profiles for training materials, generating stimulus materials for experiments, or pilot testing coding schemes before real data collection.
+
+## Setup
+
+First, load the package and create a chat constructor. We'll use Ollama with a small free model:
+
+```{r, warning = F, message = F}
+library(tidychat)
+library(tidyverse)
+
+# Initialize Ollama (make sure Ollama is running locally)
+# Run: ollama pull llama3.2:3b
+chat <- choose_ollama(model = "llama3", temperature = 0.3, seed = 123)
+```
+
+## Define Generation Schema
+
+We'll generate realistic therapy intake vignettes for research training. Each field is typed to ensure consistent output across generated cases.
+
+```{r, warning = F, message = F}
+vignette_schema <- list(
+  # Patient demographics
+  age = field_integer(
+    description = "Patient age (25-65)"
+  ),
+
+  gender = field_category(
+    description = "Patient gender",
+    categories = c("male", "female", "non-binary", "prefer not to say")
+  ),
+
+  # Clinical information
+  diagnosis = field_category(
+    description = "Primary diagnosis",
+    categories = c("major depressive disorder", "generalized anxiety disorder",
+                   "social anxiety disorder", "PTSD", "panic disorder", "adjustment disorder")
+  ),
+
+  severity = field_category(
+    description = "Symptom severity",
+    categories = c("mild", "moderate", "severe")
+  ),
+
+  # Symptoms (array field for multiple symptoms)
+  symptoms = field_array(
+    description = "List of 3-5 specific symptoms mentioned",
+    item_type = field_text("A specific symptom")
+  ),
+
+  # Numeric ratings
+  duration_months = field_number(
+    description = "Duration of symptoms in months (1-60). Vary this number.",
+    required = TRUE
+  ),
+
+  # Free text vignette
+  vignette = field_text(
+    description = "The complete therapy intake vignette (3-4 sentences describing the patient's presentation)"
+  ),
+
+  # Boolean flags
+  prior_treatment = field_boolean(
+    description = "Has the patient received prior treatment?"
+  )
+)
+```
+
+## Generate Synthetic Data
+
+The key arguments to `llm_generate` are:
+
+- **`n`**: Number of synthetic items to generate 
+- **`fields`**: Named list of field specifications defining the structure of generated data
+- **`prompt_template`**: Instructions to guide the LLM on what to generate
+- **`chat`**: The chat constructor function that defines which model and parameters to use
+- **`n_draws`**: Number of independent draws per item – useful for checking consistency across generations
+
+```{r, eval = F}
+synthetic_responses <- llm_generate(
+  n = 5,
+  fields = vignette_schema,
+  prompt_template = "Generate a realistic therapy intake vignette for an adult patient.
+                     Include age, gender, primary diagnosis, severity level,
+                     3-5 specific symptoms, duration of symptoms (in months),
+                     and whether they've had prior treatment.",
+  chat = chat,
+  n_draws = 2,  # 2 draws per vignette to check consistency
+  show_progress = TRUE
+)
+
+head(synthetic_responses)
+```
+
+```{r, echo = F, warning = F, message = F}
+synthetic_responses <- readRDS('synthetic_responses.RDS')
+head(synthetic_responses)
+```
+
+The output of `llm_generate()` mirrors the structure of `llm_extract()`: a tidy data frame where each row represents a single draw from the LLM. The key columns include: `id` (the generated case number, from 1 to n), `draw_id` (the draw number, from 1 to `n_draws`), each generated field named after the corresponding element in `fields` (here `age`, `gender`, `diagnosis`, `severity`, `symptoms`, `duration_months`, `vignette`, `prior_treatment`), plus metadata columns `model_name`, `provider`, `prompt`, `params_hash`, and individual parameter columns (`temperature`, `max_tokens`).
+
+Note that symptoms is a list column because `field_array()` returns multiple values per case. This is R's natural way of handling nested data and works seamlessly with `purrr` for further processing (e.g., `map_int(symptoms, length)` to count symptoms per case).
+
+## Assess Generation Consistency
+
+We can use `summarise_draws()` to evaluate how consistently the LLM generates the same information across the 2 draws per vignette. The function requires you to specify which columns to analyze—here we pass `age`, `gender`, `diagnosis`, `severity`, and `prior_treatment` as arguments. By grouping by `id` first, `summarise_draws()` calculates reliability metrics for each field separately across the two draws.
+
+```{r}
+reliability <- synthetic_responses %>%
+  group_by(id) %>%
+  summarise_draws(age, gender, diagnosis, severity, prior_treatment)
+
+print(reliability)
+```
+
+The output shows high consistency across most fields. `gender`, `diagnosis`, `severity`, and `prior_treatment` achieved perfect agreement (agreement = 1) across all 5 cases. The `age` field showed perfect agreement for 4 out of 5 cases (agreement = 1), with only case 2 showing variability (agreement = 0.5) where draws reported 32 and 35. This minimal variability is actually desirable for generation tasks—unlike extraction where we want consistency, generation benefits from diversity across draws to create varied synthetic cases. The `symptoms` and `duration_months` fields are list/numeric data; we check their consistency separately below.
+
+## Check Numeric Consistency
+
+For numeric fields like `duration_months`, we can calculate variability across draws using standard `dplyr` operations:
+
+```{r}
+numeric_consistency <- synthetic_responses %>%
+  group_by(id) %>%
+  summarise(
+    duration_mean = mean(as.numeric(duration_months)),
+    duration_sd = sd(as.numeric(duration_months)),
+    duration_consistent = duration_sd == 0,
+    .groups = "drop"
+  )
+
+print(numeric_consistency)
+```
+
+The results show that all cases had perfect consistency (duration_sd = 0), with every draw reporting 6 months. Unlike extraction tasks where we typically want perfect agreement, this complete consistency in generation suggests the LLM is not producing diverse synthetic cases. For generation tasks, some variability is often desirable—researchers may need to adjust parameters (e.g., increase temperature) to achieve greater diversity across draws.
+
+## Summary
+
+`llm_generate()` creates structured synthetic data for research and training. By specifying typed fields and generating multiple draws, you can create realistic vignettes, check consistency with `summarise_draws()`, and control diversity across draws (low SD = consistent profiles, high SD = varied examples). The function integrates with the `tidyverse` for filtering, mutating, and reshaping generated data.

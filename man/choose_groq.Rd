@@ -6,10 +6,10 @@
 \usage{
 choose_groq(
   model = "mixtral-8x7b-32768",
-  api_key = NULL,
   base_url = NULL,
   temperature = 0.3,
   max_tokens = 2048,
+  seed = NULL,
   ...
 )
 }
@@ -22,13 +22,13 @@ choose_groq(
 \item "gemma2-9b-it" (Google Gemma)
 }}
 
-\item{api_key}{Groq API key. If NULL, reads from GROQ_API_KEY env var.}
-
 \item{base_url}{Optional custom base URL}
 
 \item{temperature}{Sampling temperature (0-1, higher = more random, default: 0.3)}
 
 \item{max_tokens}{Maximum tokens to generate (default: 2048)}
+
+\item{seed}{Optional random seed for reproducible outputs (if supported by provider)}
 
 \item{...}{Additional parameters passed to ellmer}
 }
@@ -37,29 +37,15 @@ A chat constructor function that returns a list with chat methods
 }
 \description{
 Creates a chat constructor function for Groq's ultra-fast inference.
-Groq offers high-speed LLM inference with generous free tier.
-Requires a Groq API key.
+Requires GROQ_API_KEY environment variable to be set.
 }
 \examples{
 \dontrun{
-# Set API key
+# Set API key in environment
 Sys.setenv(GROQ_API_KEY = "your-groq-api-key")
 
 # Use Llama 3 70B for high-quality extraction
 chat <- choose_groq(model = "llama3-70b-8192")
-
-# Use Mixtral for speed/cost balance
-chat <- choose_groq(model = "mixtral-8x7b-32768", temperature = 0)
-
-# Batch annotate with Groq's fast inference
-results <- data \%>\%
-  llm_annotate(
-    .col = sentiment,
-    .input = text,
-    .chat = chat,
-    .n_draws = 10,
-    .batch_size = 50
-  )
 }
 
 }

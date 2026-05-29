@@ -1,5 +1,5 @@
 ---
-title: "1. Annotating texts with LLM"
+title: "1. Annotating Texts with LLM"
 ---
 
 ```{r, include = FALSE}
@@ -85,7 +85,7 @@ head(results)
 ```
 
 ```{r, echo = F, warning = F, message = F}
-results <- read_csv('res1.csv')
+results <- readRDS('res1.RDS')
 head(results)
 ```
 
@@ -93,7 +93,7 @@ The output of `llm_annotate()` is a tidy data frame where each row represents a 
 
 ## Quantify Uncertainty (or Agreement)
 
-We can then use `summarise_draws()` to quantify uncertainty across the 5 draws. By specifying `sentiment` as the column to summarize, the function collapses the multiple draws per item into a single row of summary statistics, grouped by the identifiers we provided (`id` and `session_note`).
+We can then use `summarise_draws()` to quantify uncertainty across the 5 draws. The function requires you to specify which column(s) to analyze - here we pass sentiment as the column to summarize. It collapses the multiple draws per item into a single row of summary statistics, grouped by the identifiers we provided (`id` and `session_note`).
 
 ```{r}
 uncertainty <- results %>%
@@ -103,7 +103,7 @@ uncertainty <- results %>%
 print(uncertainty)
 ```
 
-The output of `summarise_draws()` is a tidy summary table where each row corresponds to one original item (identified by the `id` and `session_note` columns), collapsing the 5 draws per item into summary statistics. The majority column shows the most frequent `sentiment` across draws (all 5 draws agreed in this case), `agreement` reports the proportion of draws matching that majority (1.0 = perfect agreement), `entropy` quantifies uncertainty (0 = no uncertainty), and `distribution` shows the complete frequency distribution across all draws (e.g., "positive (5)" indicates all 5 draws were positive).
+The output of `summarise_draws()` is a tidy summary table where each row corresponds to one original item (identified by the `id` and `session_note` columns), collapsing the 5 draws per item into summary statistics. The majority column shows the most frequent `sentiment` across draws, `agreement` reports the proportion of draws matching that majority (1.0 = perfect agreement), `entropy` quantifies uncertainty (0 = no uncertainty), and `distribution` shows the complete frequency distribution across all draws (e.g., "positive (5)" indicates all 5 draws were positive).
 
 ## Flag Cases for Human Review
 
@@ -117,7 +117,7 @@ needs_review <- uncertainty %>%
 print(needs_review)
 ```
 
-As expected, it is empty because all LLM responses have agreement of 1. 
+There is one row with agreement of 0.6.
 
 ## Summary
 

@@ -1,5 +1,5 @@
 ---
-title: "2. Extracting information with LLM into multiple columns"
+title: "2. Extracting Information from Texts/PDFs/Images with LLM into Multiple Columns"
 ---
 
 ```{r, include = FALSE}
@@ -20,9 +20,10 @@ library(tidychat)
 library(tidyverse)
 
 # Initialize Ollama (make sure Ollama is running locally)
-# Run: ollama pull llama3.2:3b
 chat <- choose_ollama(model = "llama3", temperature = 0.3, seed = 123)
 ```
+
+Note: For PDF or image extraction, try using models from Gemini or other community models from OpenRouter. 
 
 ## Define Extraction Schema
 
@@ -107,7 +108,7 @@ head(results)
 ```
 
 ```{r, echo = F, warning = F, message = F}
-results <- read_csv('res2.csv')
+results <- readRDS('res2.RDS')
 head(results)
 ```
 
@@ -115,7 +116,7 @@ The output of `llm_extract()` is a tidy data frame where each row represents a s
 
 ## Assess Extraction Reliability
 
-We can use `summarise_draws()` to evaluate how consistently the LLM extracted each field across the 3 draws. By grouping by `id` and passing multiple field names (`sample_size`, `study_design`, `significant`, `population`), the function calculates reliability metrics for each field separately.
+We can use `summarise_draws()` to evaluate how consistently the LLM extracted each field across the 3 draws. Pass the field names you want to analyze as arguments - here we pass `sample_size`, `study_design`, `significant`, and `population` to calculate reliability metrics for each field separately.
 
 ```{r}
 reliability <- results %>%

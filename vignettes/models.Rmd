@@ -1,5 +1,5 @@
 ---
-title: "3. Choosing LLM Providers and Configuring Models"
+title: "4. Choosing LLM Providers and Configuring Models"
 ---
 
 ```{r, include = FALSE}
@@ -14,6 +14,15 @@ This section shows how to extract structured data from research abstracts using 
 ## Introduction
 
 Before you can annotate text or extract structured data, you need to create a chat constructor that tells `tidychat` which LLM provider and model to use, along with key parameters like `temperature`, `top_p`, and `max_tokens`. This section explains the available providers, how to configure them, and how to choose the right settings for your use.
+
+## API Key Security: A Critical Node
+
+Never hard-code API keys in your scripts. Always use environment variables to store sensitive credentials.
+
+```{r}
+# Set in your R session (temporary)
+Sys.setenv(GEMINI_API_KEY = "your-api-key-here")
+```
 
 ## Why Multiple Providers?
 
@@ -60,6 +69,40 @@ chat <- choose_ollama(
   model = "llama3.2:3b",
   temperature = 0.3,
   max_tokens = 500
+)
+```
+
+## OpenRouter: Access 200+ Community Models Through One API
+
+OpenRouter provides a unified API to access hundreds of open-source and proprietary models from a single endpoint. This is perfect for:
+
+- Comparing multiple models without managing multiple API keys
+- Accessing fine-tuned community models not available elsewhere
+- Using free tier models for development and testing
+- Falling back to alternative providers if one fails
+
+### Setting Up OpenRouter
+
+1. Create an account at openrouter.ai
+
+2. Get your API key from the dashboard
+
+3. Set the environment variable:
+
+```{r}
+# In your R session
+Sys.setenv(OPENROUTER_API_KEY = "sk-or-v1-xxxxx")
+```
+
+### Using OpenRouter with tidychat
+
+```{r}
+library(tidychat)
+
+# Use a free tier model (great for testing)
+chat <- choose_openrouter(
+  model = "meta-llama/llama-3.2-3b-instruct:free",
+  temperature = 0.3
 )
 ```
 
@@ -115,11 +158,13 @@ Practical guidance:
 Gemini offers a generous free tier and strong multimodal capabilities, including native PDF support.
 
 ```{r, eval = F}
+Sys.setenv(GEMINI_API_KEY = "YOUR API KEY")
+
 # Use Flash model for speed (free tier)
-chat <- choose_gemini(model = "gemini-2.5-flash", api_key =  "your-api-key")
+chat <- choose_gemini(model = "gemini-2.5-flash")
 
 # Use Pro for complex tasks
-chat <- choose_gemini(model = "gemini-2.5-pro", temperature = 0.1, api_key =  "your-api-key")
+chat <- choose_gemini(model = "gemini-2.5-pro", temperature = 0.1)
 ```
 
 Get an API key: Visit Google AI Studio → Get API key → Free tier available.
@@ -129,8 +174,9 @@ Get an API key: Visit Google AI Studio → Get API key → Free tier available.
 OpenAI's GPT models are state-of-the-art but require payment.
 
 ```{r, eval = F}
+Sys.setenv(OPENAI_API_KEY = "YOUR API KEY")
 # Use GPT-4o Mini for cost-effective annotation
-chat <- choose_openai(model = "gpt-4o-mini", temperature = 0.3, api_key =  "your-api-key")
+chat <- choose_openai(model = "gpt-4o-mini", temperature = 0.3)
 
 # Use GPT-4o for complex extraction
 chat <- choose_openai(model = "gpt-4o", max_tokens = 4096)
@@ -143,11 +189,13 @@ Get an API key: Visit OpenAI Platform → Create API key → Requires billing.
 Claude models excel at safety and long-context understanding.
 
 ```{r, eval = F}
+Sys.setenv(ANTHROPIC_API_KEY = "YOUR API KEY")
+ 
 # Use Haiku for fast, cheap annotation
-chat <- choose_anthropic(model = "claude-3-haiku-20240307", api_key =  "your-api-key")
+chat <- choose_anthropic(model = "claude-3-haiku-20240307")
 
 # Use Sonnet for balanced performance
-chat <- choose_anthropic(model = "claude-3-5-sonnet-20241022", api_key =  "your-api-key")
+chat <- choose_anthropic(model = "claude-3-5-sonnet-20241022")
 ```
 
 Get an API key: Visit Anthropic Console → Create API key → Requires billing.
@@ -157,11 +205,12 @@ Get an API key: Visit Anthropic Console → Create API key → Requires billing.
 Groq offers a generous free tier.
 
 ```{r, eval = F}
-# Use Llama 3 70B for high-quality extraction
-chat <- choose_groq(model = "llama3-70b-8192", temperature = 0, api_key =  "your-api-key")
+Sys.setenv(GROQ_API_KEY = "YOUR API KEY")
+
+chat <- choose_groq(model = "llama3-70b-8192", temperature = 0)
 
 # Use Mixtral for speed/cost balance
-chat <- choose_groq(model = "mixtral-8x7b-32768", api_key =  "your-api-key")
+chat <- choose_groq(model = "mixtral-8x7b-32768")
 ```
 
 Get an API key: Visit Groq Console → Create API key → Free tier available.
@@ -171,10 +220,12 @@ Get an API key: Visit Groq Console → Create API key → Free tier available.
 DeepSeek offers competitive pricing and strong performance.
 
 ```{r, eval = F}
+Sys.setenv(DEEPSEEK_API_KEY = "YOUR API KEY")
+
 chat <- choose_deepseek(model = "deepseek-chat")
 
 # Or via OpenRouter (alternative access)
-Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-key", api_key =  "your-api-key")
+Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-key")
 chat <- choose_deepseek(
   model = "deepseek/deepseek-chat",
   base_url = "https://openrouter.ai/api/v1",

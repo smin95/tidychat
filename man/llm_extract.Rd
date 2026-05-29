@@ -2,7 +2,7 @@
 % Please edit documentation in R/llm_extract.R
 \name{llm_extract}
 \alias{llm_extract}
-\title{Extract multiple structured fields from text or images}
+\title{Extract multiple structured fields from text, images, PDFs, or audio}
 \usage{
 llm_extract(
   data,
@@ -27,7 +27,7 @@ llm_extract(
 
 \item{input}{Column containing content to analyze (unquoted, optional)}
 
-\item{input_type}{Type of input: "text", "image", "pdf", "markdown", "html"}
+\item{input_type}{Type of input: "text", "image", "pdf", "audio", "markdown", "html"}
 
 \item{id}{Optional unique ID column. If NULL, creates id from row_number()}
 
@@ -54,6 +54,8 @@ plus metadata (model_name, provider, prompt, params_hash, and parameter columns)
 \description{
 Extracts multiple structured fields from each row using an LLM with
 type-safe field specifications. Supports multiple draws per item.
+Multimodal extractions (images, audio, PDF) only work with specific providers,
+such as Gemini.
 }
 \examples{
 \dontrun{
@@ -87,8 +89,23 @@ results <- reviews |>
     n_draws = 3
   )
 
-# View results
-print(results)
+# Extract from audio files
+audio_files <- data.frame(
+  id = 1:2,
+  path = c("meeting.mp3", "interview.wav")
+)
+
+audio_results <- audio_files |>
+  llm_extract(
+    fields = list(
+      summary = field_text("Summary of the conversation"),
+      speakers = field_integer("Number of speakers")
+    ),
+    input = path,
+    input_type = "audio",
+    prompt_task = "Analyze this audio recording",
+    chat = choose_gemini()
+  )
 }
 
 }

@@ -9,6 +9,7 @@ choose_ollama(
   base_url = NULL,
   temperature = 0.3,
   max_tokens = 500,
+  seed = NULL,
   ...
 )
 }
@@ -20,6 +21,8 @@ choose_ollama(
 \item{temperature}{Sampling temperature (0-1, higher = more random, default: 0.3)}
 
 \item{max_tokens}{Maximum tokens to generate (default: 500)}
+
+\item{seed}{Optional random seed for reproducible outputs (if supported by provider)}
 
 \item{...}{Additional parameters passed to ellmer}
 }

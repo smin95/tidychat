@@ -7,10 +7,10 @@
 choose_azure_openai(
   deployment_name,
   endpoint,
-  api_key = NULL,
   api_version = "2024-02-15-preview",
   temperature = 0.3,
   max_tokens = 2048,
+  seed = NULL,
   ...
 )
 }
@@ -19,13 +19,13 @@ choose_azure_openai(
 
 \item{endpoint}{Azure OpenAI endpoint URL}
 
-\item{api_key}{Azure API key. If NULL, reads from AZURE_OPENAI_API_KEY env var.}
-
 \item{api_version}{Azure API version (default: "2024-02-15-preview")}
 
 \item{temperature}{Sampling temperature (0-1, default: 0.3)}
 
 \item{max_tokens}{Maximum tokens to generate (default: 2048)}
+
+\item{seed}{Optional random seed for reproducible outputs (if supported by provider)}
 
 \item{...}{Additional parameters passed to ellmer}
 }
@@ -34,26 +34,18 @@ A chat constructor function that returns a list with chat methods
 }
 \description{
 Creates a chat constructor function for Azure OpenAI deployments.
-Requires Azure OpenAI endpoint and API key.
+Requires AZURE_OPENAI_API_KEY environment variable to be set.
 }
 \examples{
 \dontrun{
+# Set API key in environment
+Sys.setenv(AZURE_OPENAI_API_KEY = "your-azure-key")
+
 # Configure Azure OpenAI
 chat <- choose_azure_openai(
   deployment_name = "gpt-4-deployment",
-  endpoint = "https://your-resource.openai.azure.com/",
-  api_key = "your-azure-key"
+  endpoint = "https://your-resource.openai.azure.com/"
 )
-
-# Annotate with Azure OpenAI
-results <- data \%>\%
-  llm_annotate(
-    .col = sentiment,
-    .input = text,
-    .chat = chat,
-    .prompt_task = "Classify sentiment",
-    .categories = c("positive", "negative")
-  )
 }
 
 }

@@ -4,7 +4,7 @@
 \name{tidychat-package}
 \alias{tidychat}
 \alias{tidychat-package}
-\title{tidychat: Tidy Tools for Batch LLM Annotation and Extraction}
+\title{tidychat: Tidy Tool for Batch LLM Annotation and Extraction}
 \description{
 Provides tidy tools for batch annotation and structured extraction using Large Language Models (LLMs). Supports multiple independent draws per item with built-in uncertainty quantification, making it ideal for systematic text analysis, literature reviews, and reproducible research workflows. Compatible with Ollama, Gemini, OpenAI, Anthropic, Groq, and DeepSeek APIs.
 }

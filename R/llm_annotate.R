@@ -359,7 +359,8 @@ llm_annotate <- function(data, col, input = NULL, input_type = "text",
         model_name = model_name,
         provider = provider_name,
         prompt = if(use_per_row_prompts) .row_prompt else full_prompt_text,
-        params_hash = params_hash
+        params_hash = params_hash,
+        query_time = Sys.time()
       ) |>
       dplyr::select(-value)
 

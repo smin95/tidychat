@@ -6,10 +6,10 @@
 \usage{
 choose_gemini(
   model = "gemini-2.5-flash",
-  api_key = NULL,
   base_url = NULL,
   temperature = 0.3,
   max_tokens = 2048,
+  seed = NULL,
   ...
 )
 }
@@ -21,13 +21,13 @@ choose_gemini(
 \item "gemini-2.0-flash-lite" (lightweight, free tier)
 }}
 
-\item{api_key}{Gemini API key. If NULL, reads from GEMINI_API_KEY env var.}
-
 \item{base_url}{Optional custom base URL}
 
 \item{temperature}{Sampling temperature (0-1, higher = more random, default: 0.3)}
 
 \item{max_tokens}{Maximum tokens to generate (default: 2048)}
+
+\item{seed}{Optional random seed for reproducible outputs (if supported by provider)}
 
 \item{...}{Additional parameters passed to ellmer}
 }
@@ -36,7 +36,8 @@ A chat constructor function that returns a list with chat methods
 }
 \description{
 Creates a chat constructor function for Google's Gemini models.
-Requires a Gemini API key from Google AI Studio.
+Uses ellmer's automatic credential discovery via GEMINI_API_KEY environment variable.
+Supports text, images, PDFs, and audio files.
 }
 \examples{
 \dontrun{
@@ -45,18 +46,6 @@ Sys.setenv(GEMINI_API_KEY = "your-api-key")
 
 # Use Gemini Flash for speed
 chat <- choose_gemini(model = "gemini-2.5-flash")
-
-# Or use Pro for complex tasks
-chat <- choose_gemini(model = "gemini-2.5-pro", temperature = 0.1)
-
-# Annotate with Gemini
-results <- data \%>\%
-  llm_extract(
-    .fields = extraction_fields,
-    .input = text,
-    .chat = chat,
-    .n_draws = 3
-  )
 }
 
 }

@@ -14,6 +14,7 @@ articles:
     contents:
        - annotate
        - extract
+       - generate
        - models
        - fields
 
@@ -23,6 +24,7 @@ reference:
     contents:
       - llm_annotate
       - llm_extract
+      - llm_generate
       - summarise_draws
 
   - title: "Provider Selection"
@@ -35,6 +37,8 @@ reference:
       - choose_groq
       - choose_deepseek
       - choose_azure_openai
+      - choose_huggingface
+      - choose_openrouter
 
   - title: "Field Validators"
     desc: "Functions for defining structured data fields"

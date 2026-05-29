@@ -1,12 +1,14 @@
-#' Extract multiple structured fields from text or images
+#' Extract multiple structured fields from text, images, PDFs, or audio
 #'
 #' Extracts multiple structured fields from each row using an LLM with
 #' type-safe field specifications. Supports multiple draws per item.
+#' Multimodal extractions (images, audio, PDF) only work with specific providers,
+#' such as Gemini.
 #'
 #' @param data Data frame with content to analyze
 #' @param fields Named list of field specifications from field_*() functions
 #' @param input Column containing content to analyze (unquoted, optional)
-#' @param input_type Type of input: "text", "image", "pdf", "markdown", "html"
+#' @param input_type Type of input: "text", "image", "pdf", "audio", "markdown", "html"
 #' @param id Optional unique ID column. If NULL, creates id from row_number()
 #' @param prompt_task Task description for the LLM
 #' @param batch_size Number of items per API call (default: 10)
@@ -52,8 +54,23 @@
 #'     n_draws = 3
 #'   )
 #'
-#' # View results
-#' print(results)
+#' # Extract from audio files
+#' audio_files <- data.frame(
+#'   id = 1:2,
+#'   path = c("meeting.mp3", "interview.wav")
+#' )
+#'
+#' audio_results <- audio_files |>
+#'   llm_extract(
+#'     fields = list(
+#'       summary = field_text("Summary of the conversation"),
+#'       speakers = field_integer("Number of speakers")
+#'     ),
+#'     input = path,
+#'     input_type = "audio",
+#'     prompt_task = "Analyze this audio recording",
+#'     chat = choose_gemini()
+#'   )
 #' }
 #'
 #' @export
@@ -113,6 +130,7 @@ llm_extract <- function(data, fields, input = NULL, input_type = "text", id = NU
 
   # Check provider for native file support
   has_native_files <- provider_name %in% c("google", "openai", "anthropic")
+  has_audio_support <- provider_name == "google"  # Only Gemini supports audio natively
 
   # Create content column based on input type (only if input is provided)
   if(!is.null(input_col_name)) {
@@ -157,6 +175,33 @@ llm_extract <- function(data, fields, input = NULL, input_type = "text", id = NU
               } else if(file.exists(x)) {
                 return(extract_pdf_text(x))
               }
+            }
+          }
+          return(NULL)
+        } else if(input_type == "audio") {
+          if(is.character(x) && nchar(trimws(x)) > 0) {
+            # Only Google Gemini supports native audio
+            if(has_audio_support) {
+              if(grepl("^https?://", x, ignore.case = TRUE)) {
+                # For remote files, download first
+                ext <- tools::file_ext(x)
+                if(ext == "") ext <- "mp3"
+                tmp <- tempfile(fileext = paste0(".", ext))
+                tryCatch({
+                  download.file(x, tmp, mode = "wb", quiet = TRUE)
+                  # Use google_upload for Gemini
+                  return(ellmer::google_upload(tmp))
+                }, error = function(e) {
+                  if(show_progress) cli::cli_alert_warning("Failed to download audio: {e$message}")
+                  return(NULL)
+                })
+              } else if(file.exists(x)) {
+                # Use google_upload for Gemini
+                return(ellmer::google_upload(x))
+              }
+            } else {
+              if(show_progress) cli::cli_alert_warning("Audio extraction requires Google Gemini provider. Use choose_gemini()")
+              return(NULL)
             }
           }
           return(NULL)
@@ -243,7 +288,8 @@ llm_extract <- function(data, fields, input = NULL, input_type = "text", id = NU
         model_name = model_name,
         provider = provider_name,
         prompt = prompt_task,
-        params_hash = params_hash
+        params_hash = params_hash,
+        query_time = Sys.time()
       )
 
     for(field_name in names(fields)) {
